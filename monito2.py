@@ -42,9 +42,33 @@ def get_storage_usage():
     return used_percent
 
 def get_ram_usage():
-    # Use the os.sysconf() function to get the total and used RAM (in bytes)
+    # Get the total RAM (in bytes)
+    total_ram = os.sysconf('SC_PAGE_SIZE') * os.sysconf('SC_PHYS_PAGES')
+
+    # Get the used RAM (in bytes)
+    with open('/proc/meminfo', 'r') as meminfo:
+        lines = meminfo.readlines()
+        for line in lines:
+            if line.startswith('MemTotal:'):
+                total_ram_str = line.split()[1]
+                total_ram = int(total_ram_str) * 1024
+            elif line.startswith('MemFree:'):
+                free_ram_str = line.split()[1]
+                free_ram = int(free_ram_str) * 1024
+            elif line.startswith('Buffers:'):
+                buffers_ram_str = line.split()[1]
+                buffers_ram = int(buffers_ram_str) * 1024
+            elif line.startswith('Cached:'):
+                cached_ram_str = line.split()[1]
+                cached_ram = int(cached_ram_str) * 1024
+
+    used_ram = total_ram - free_ram - buffers_ram - cached_ram
+
+    # Calculate the percentage of used RAM
+    used_percent = (used_ram / total_ram) * 100
+
     # Return the percentage of used RAM
-    pass
+    return used_percent
 
 def get_cpu_usage():
     # Use the os.getloadavg() function to get the CPU load average
