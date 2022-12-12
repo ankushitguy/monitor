@@ -72,14 +72,17 @@ def get_ram_usage():
     return used_percent
 
 def get_cpu_usage():
-    load_avg = psutil.getloadavg()
-    cpu_percent = sum(load_avg) / len(load_avg) * 100
-    return cpu_percent
+    loadavg = os.getloadavg()
+    used_cpu = (loadavg[0] / os.cpu_count()) * 100
+    return used_cpu
 
 def send_alert_email(storage, ram, cpu):
     # Use the smtplib library to send an email alert to the administrator
     # Include the current storage, RAM, and CPU usage in the email body
-    pass
+    print(get_storage_usage())
+    print(get_ram_usage())
+    print(get_cpu_usage())
+
 
 # Start the monitoring process
 monitor_server()
