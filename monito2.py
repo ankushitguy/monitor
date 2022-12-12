@@ -1,5 +1,6 @@
 import os
 import time
+import psutil
 
 def monitor_server():
     # Set the interval for checking the server stats (in seconds)
@@ -71,9 +72,9 @@ def get_ram_usage():
     return used_percent
 
 def get_cpu_usage():
-    # Use the os.getloadavg() function to get the CPU load average
-    # Return the percentage of used CPU
-    pass
+    load_avg = psutil.getloadavg()
+    cpu_percent = sum(load_avg) / len(load_avg) * 100
+    return cpu_percent
 
 def send_alert_email(storage, ram, cpu):
     # Use the smtplib library to send an email alert to the administrator
