@@ -23,9 +23,23 @@ def monitor_server():
             time.sleep(interval)
 
 def get_storage_usage():
-    # Use the os.statvfs() function to get the total and used storage space (in bytes)
+    # Set the path to the storage device
+    storage_device = '/dev/sda1'
+
+    # Get the filesystem stats for the storage device
+    stats = os.statvfs(storage_device)
+
+    # Get the total storage space (in bytes)
+    total_storage = stats.f_frsize * stats.f_blocks
+
+    # Get the used storage space (in bytes)
+    used_storage = stats.f_frsize * (stats.f_blocks - stats.f_bfree)
+
+    # Calculate the percentage of used storage space
+    used_percent = (used_storage / total_storage) * 100
+
     # Return the percentage of used storage space
-    pass
+    return used_percent
 
 def get_ram_usage():
     # Use the os.sysconf() function to get the total and used RAM (in bytes)
